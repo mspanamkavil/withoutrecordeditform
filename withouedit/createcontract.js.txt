@@ -1,0 +1,55 @@
+({
+	
+    doInit: function(component, event, helper) {        
+        helper.getPicklistValues(component, event);
+         helper.getPicklistValues1(component, event);
+         helper.getPicklistValues2(component, event);
+         helper.getmultiPicklistValues(component, event);
+    },
+     
+    
+    conSave : function(component, event, helper) {
+        helper.savecon(component, event);
+    },
+     
+    //handle Industry Picklist Selection
+    handleOnChange : function(component, event, helper) {
+        var spr = component.get("v.Opportunity.SPR__c");
+        alert(spr);
+    },
+     handleOnChange1 : function(component, event, helper) {
+        var spr = component.get("v.Opportunity.Customer_Platform__c");
+        alert(spr);
+    },
+     handleOnChange2 : function(component, event, helper) {
+        var spr = component.get("v.Opportunity.Document_Type__c");
+        alert(spr);
+    },
+    
+      handleGenreChange: function (component, event, helper) {
+        //Get the Selected values   
+        var selectedValues = event.getParam("value");
+         
+        //Update the Selected Values  
+        component.set("v.Opportunity.Service_Type__c", selectedValues);  
+    },
+  getSelectedGenre : function(component, event, helper){
+        //Get selected Genre List on button click 
+        var selectedValues = component.get("v.Opportunity.Service_Type__c");
+        console.log('Selectd Genre-' + selectedValues);
+      alert(selectedValues)
+    },
+        
+    handleUploadFinished: function (cmp, event) {
+        // Get the list of uploaded files
+        var uploadedFiles = event.getParam("files");
+        alert("Files uploaded : " + uploadedFiles.length);
+       // alert(filetype)
+        //console.log(filetype)
+
+        // Get the file name
+        uploadedFiles.forEach(file => console.log(file.name+"nothing"));
+    }
+
+
+})

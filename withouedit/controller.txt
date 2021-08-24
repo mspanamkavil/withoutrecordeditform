@@ -1,0 +1,123 @@
+public class DynamicPicklist {   
+    
+    @AuraEnabled 
+    Public static List<Opportunity> createcon(Opportunity oppobj,string recidl){
+         system.debug('spr'+oppobj.SPR__c);
+        system.debug('sprcustomerplatform'+oppobj.Customer_Platform__c);
+        system.debug('sprquotenumber'+oppobj.CPQ_Quote_Number__c);
+        system.debug('sprdocumenttype'+oppobj.Document_Type__c);
+       // system.debug('sprservicetype'+oppobj.Service_Type__c);
+        
+        system.debug('the recordid is');
+         system.debug(recidl);
+        
+         List<Opportunity> opp1 = new List<Opportunity>();
+         List<Opportunity> opp = new List<Opportunity>();
+        opp = [select Id,Name,Customer_Platform__c,Customer_Account_Number__c,CPQ_Quote_Number__c,
+               Document_Type__c,Service_Type__c,SPR__c,SPR_Attachment__c 
+               From Opportunity where Id=:recidl];
+         for(Opportunity opp2: opp){
+            //Update leadsource field
+            opp2.Id=recidl;
+             
+            opp2.Customer_Platform__c=oppobj.Customer_Platform__c;
+            // system.debug(oppobj.Customer_Platform__c);
+             opp2.Customer_Account_Number__c=oppobj.Customer_Account_Number__c;
+             opp2.CPQ_Quote_Number__c=oppobj.CPQ_Quote_Number__c;
+             opp2.Document_Type__c=oppobj.Document_Type__c;
+            //opp2.Service_Type__c=oppobj.Service_Type__c;
+             opp2.SPR__c=oppobj.SPR__c;
+             
+             
+            //Add to list of sObjects
+            opp1.add(opp2);
+             //update opp1;
+             system.debug(oppobj.SPR__c);
+        }
+                    
+            
+            
+            try{
+                
+                 update opp1;
+                
+            }
+    catch(Exception e){
+               System.debug(e.getMessage());
+              System.debug(e.getLineNumber());
+          }
+return opp1;           
+    }
+    
+    @AuraEnabled
+    public static List <String> getmultiPicklistValues() {
+        List<String> plValues = new List<String>();
+        
+        //Get the object type from object name. Here I've used custom object Book.
+        Schema.SObjectType objType = Schema.getGlobalDescribe().get('Opportunity');
+        
+        //Describe the sObject using its object type.
+        Schema.DescribeSObjectResult objDescribe = objType.getDescribe();
+        
+        //Get the specific field information from field name. Here I've used custom field Genre__c of Book object.
+        Schema.DescribeFieldResult objFieldInfo = objDescribe.fields.getMap().get('Service_Type__c').getDescribe();
+        
+        //Get the picklist field values.
+        List<Schema.PicklistEntry> picklistvalues = objFieldInfo.getPicklistValues();
+        
+        //Add the picklist values to list.
+        for(Schema.PicklistEntry plv: picklistvalues) {
+            plValues.add(plv.getValue());
+        }
+        plValues.sort();
+        return plValues;
+    }
+    
+    @AuraEnabled 
+    public static Map<String, String> getCustomerPlatformFieldValue(){
+        Map<String, String> options = new Map<String, String>();
+        
+        Schema.DescribeFieldResult fieldResult = Opportunity.Customer_Platform__c.getDescribe();
+        
+        List<Schema.PicklistEntry> pValues = fieldResult.getPicklistValues();
+        for (Schema.PicklistEntry p: pValues) {
+            
+            options.put(p.getValue(), p.getLabel());
+        }
+        return options;
+    }
+    
+    @AuraEnabled 
+    public static Map<String, String> getDocumentTypeFieldValue(){
+        Map<String, String> options = new Map<String, String>();
+        
+        Schema.DescribeFieldResult fieldResult = Opportunity.Document_Type__c.getDescribe();
+        
+        List<Schema.PicklistEntry> pValues = fieldResult.getPicklistValues();
+        for (Schema.PicklistEntry p: pValues) {
+            
+            options.put(p.getValue(), p.getLabel());
+        }
+        return options;
+    }
+    
+    
+    @AuraEnabled 
+    public static Map<String, String> getSPRFieldValue(){
+        Map<String, String> options = new Map<String, String>();
+        
+        Schema.DescribeFieldResult fieldResult = Opportunity.SPR__c.getDescribe();
+        
+        List<Schema.PicklistEntry> pValues = fieldResult.getPicklistValues();
+        for (Schema.PicklistEntry p: pValues) {
+            
+            options.put(p.getValue(), p.getLabel());
+        }
+        return options;
+    }
+    
+    
+    
+    
+    
+}

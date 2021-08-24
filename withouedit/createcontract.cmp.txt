@@ -1,0 +1,98 @@
+<aura:component controller="DynamicPicklist" implements="force:lightningQuickAction,force:hasRecordId" >
+     <aura:attribute name="fieldMap" type="Map"/>
+    <aura:attribute name="fieldMap1" type="Map"/>
+    <aura:attribute name="fieldMap2" type="Map"/>
+    <aura:attribute name="filetype" type="List" default="['.png', '.jpg', '.jpeg']" />
+    <aura:attribute name="multiple" type="Boolean" default="true" />
+    <aura:attribute name="disabled" type="Boolean" default="true" />
+    <aura:attribute name="recordId" type="String" />
+     <aura:attribute name="GenreList" type="List" default="[]" description="Genre Picklist Values"/>
+    <aura:attribute name="selectedGenreList" type="List" default="[]" description="Selected Genre Picklist Values"/>
+    <aura:attribute name="Opportunity" type="Opportunity" default="{'sobjectType':'Opportunity', 
+                                                       'Customer_Platform__c': '',
+                                                       'Customer_Account_Number__c': '',
+                                                       'CPQ_Quote_Number__c': '',
+                                                       'Document_Type__c': '', 
+                                                       'SPR__c': '',Service_Type__c:'',
+                                                                   }"/>
+     
+    <!--Declare Handler-->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>  
+     
+    <!--Component Start-->
+    <div class="">
+        <div class="container-fluid">  
+             <lightning:layout>
+            <lightning:layoutItem size="6">
+               
+            <div class="form-group">
+              
+                  
+    <!--lightning help text for input field-->
+               
+                <lightning:select aura:id="Customer Platform" value="{!v.Opportunity.Customer_Platform__c}" onchange="{!c.handleOnChange1}" name="Customer Platform" label="Customer Platform"  required="true">
+                    <option value="">--None--</option>
+                    <aura:iteration items="{!v.fieldMap}" var="i" indexVar="key">
+                        <option text="{!i.value}" value="{!i.key}" selected="{!i.key==v.Opportunity.Customer_Platform__c}" />
+                    </aura:iteration>
+                </lightning:select>
+            </div>
+            
+            
+            <div class="form-group">
+                <lightning:input name="Customer Account Number" type="text" label="Customer Account Number" fieldLevelHelp="Help text goes here" value="{!v.Opportunity.Customer_Account_Number__c}" />
+            </div>
+            <div class="form-group">
+                <lightning:input name="CPQ Quote Number" type="text" label="CPQ Quote Number" value="{!v.Opportunity.CPQ_Quote_Number__c}" fieldLevelHelp="Help text goes here" />
+            </div>
+                
+                 <div class="form-group">
+                <lightning:select aura:id="SPR" value="{!v.Opportunity.SPR__c}" onchange="{!c.handleOnChange}" name="SPR" label="SPR" required="true">
+                    <option value="">--None--</option>
+                    <aura:iteration items="{!v.fieldMap2}" var="i" indexVar="key">
+                        <option text="{!i.value}" value="{!i.key}" selected="{!i.key==v.Opportunity.SPR__c}" />
+                    </aura:iteration>
+                </lightning:select>
+                     
+            </div>
+                <div class="form-group">
+                <lightning:select aura:id="Document Type" value="{!v.Opportunity.Document_Type__c}" onchange="{!c.handleOnChange2}" name="Document Type" label="Document Type" required="true">
+                    <option value="">--None--</option>
+                    <aura:iteration items="{!v.fieldMap1}" var="i" indexVar="key">
+                        <option text="{!i.value}" value="{!i.key}" selected="{!i.key==v.Opportunity.Document_Type__c}" />
+                    </aura:iteration>
+                </lightning:select>
+            </div>
+                  <lightning:fileUpload label="Attach receipt"
+        name="fileUploader"
+        multiple="true"
+        accept="{!v.filetype}"
+        recordId="{!v.recordId}"
+        onuploadfinished="{!c.handleUploadFinished}" />
+            </lightning:layoutItem>
+             <lightning:layoutItem size="6">
+            
+             <div class="slds-p-left_medium">
+        <lightning:dualListbox aura:id="selectGenre"
+                               name="Genre"
+                               label="Service Type"
+                               sourceLabel="Available Type"
+                               selectedLabel="Selected Type"
+                               options="{!v.GenreList }"
+                               value="{!v.selectedGenreList}"
+                               onchange="{!c.handleGenreChange}"/> <br/>
+        <lightning:button variant="brand" label="Get Selected Genre" onclick="{!c.getSelectedGenre}" />
+    </div>
+            
+            
+            
+          
+                 
+                    </lightning:layoutItem>
+        </lightning:layout>
+        </div>
+        <br/>
+        <lightning:button variant="brand" label="Submit" onclick="{!c.conSave}" />              
+    </div>
+	
+</aura:component>

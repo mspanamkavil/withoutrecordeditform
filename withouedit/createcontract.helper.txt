@@ -1,0 +1,99 @@
+({   
+    
+    getmultiPicklistValues: function(component, event, helper) {
+        var action = component.get("c.getmultiPicklistValues");
+        action.setCallback(this, function(response) {
+            var state = response.getState();
+            if (state === "SUCCESS"){
+                var result = response.getReturnValue();
+                var plValues = [];
+                for (var i = 0; i < result.length; i++) {
+                    plValues.push({
+                        label: result[i],
+                        value: result[i]
+                    });
+                }
+                component.set("v.GenreList", plValues);
+            }
+        });
+        $A.enqueueAction(action);
+    },
+    
+    getPicklistValues: function(component, event) {
+        var action = component.get("c.getCustomerPlatformFieldValue");
+        action.setCallback(this, function(response) {
+            var state = response.getState();
+            if (state === "SUCCESS") {
+                var result = response.getReturnValue();
+                var fieldMap = [];
+                for(var key in result){
+                    fieldMap.push({key: key, value: result[key]});
+                }
+                component.set("v.fieldMap", fieldMap);
+            }
+        });
+        $A.enqueueAction(action);
+    },
+     getPicklistValues1: function(component, event) {
+        var action = component.get("c.getDocumentTypeFieldValue");
+        action.setCallback(this, function(response) {
+            var state = response.getState();
+            if (state === "SUCCESS") {
+                var result = response.getReturnValue();
+                var fieldMap = [];
+                for(var key in result){
+                    fieldMap.push({key: key, value: result[key]});
+                }
+                component.set("v.fieldMap1", fieldMap);
+            }
+        });
+        $A.enqueueAction(action);
+    },
+    getPicklistValues2: function(component, event) {
+        var action = component.get("c.getSPRFieldValue");
+        action.setCallback(this, function(response) {
+            var state = response.getState();
+            if (state === "SUCCESS") {
+                var result = response.getReturnValue();
+                var fieldMap = [];
+                for(var key in result){
+                    fieldMap.push({key: key, value: result[key]});
+                }
+                component.set("v.fieldMap2", fieldMap);
+                alert("done")
+            }
+        });
+        $A.enqueueAction(action);
+    },
+    
+    savecon : function(component, event) {
+        var opp = component.get("v.Opportunity");
+        var recidlo=component.get("v.recordId")
+        alert(recidlo)
+        alert(opp.Customer_Platform__c)
+        alert(opp.Customer_Account_Number__c)
+        alert(opp.CPQ_Quote_Number__c)
+        alert(opp.Document_Type__c)
+        alert(opp.Service_Type__c)
+          alert(opp.SPR__c)
+        var action = component.get("c.createcon");
+        action.setParams({
+            oppobj : opp,
+             recidl:recidlo,
+        });
+        action.setCallback(this,function(response){
+            var state = response.getState();
+            if(state === "SUCCESS"){
+                alert('Record Created Successfully!!');
+            } else if(state === "ERROR"){
+                var errors = action.getError();
+                if (errors) {
+                    if (errors[0] && errors[0].message) {
+                        alert(errors[0].message);
+                    }
+                }
+            }
+        });       
+        $A.enqueueAction(action);
+    }
+})
